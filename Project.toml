@@ -1,0 +1,13 @@
+name = "TerrainGraphs"
+uuid = "fe7b0593-30d5-4ca5-981c-f1409cdca83d"
+authors = ["Pawel Maczuga <pmaczuga97@gmail.com> and contributors"]
+version = "0.1.0"
+
+[compat]
+julia = "1.7"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
