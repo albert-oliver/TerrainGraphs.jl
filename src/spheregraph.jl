@@ -51,7 +51,10 @@ function deal_with_poles(uv1, uv2)
 end
 
 function get_adjusted_uve(g, v1, v2)
-    uv1, uv2 = get_adjusted_uve(g, v1, v2)
+    uv1 = copy(uve(g, v1))
+    uv2 = copy(uve(g, v2))
+    uv1, uv2 = deal_with_180(uv1, uv2)
+    uv1, uv2 = deal_with_poles(uv1, uv2)
     return uv1, uv2
 end
 
@@ -77,10 +80,7 @@ MeshGraphs.distance(g::SphereGraph, v1::Integer, v2::Integer) =
     distance_uve(g, v1, v2)
 
 function MeshGraphs.new_vertex_coords(g::SphereGraph, v1::Integer, v2::Integer)
-    uv1 = copy(uve(g, v1))
-    uv2 = copy(uve(g, v2))
-    uv1, uv2 = deal_with_180(uv1, uv2)
-    uv1, uv2 = deal_with_poles(uv1, uv2)
+    uv1, uv2 = get_adjusted_uve(g, v1, v2)
     u, v = mean([uv1, uv2])
     elev = 0 # real_elevation(spec(g).terrain_map, u, v)
     return [u, v, elev]
