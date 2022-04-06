@@ -1,6 +1,9 @@
 module TerrainGraphs
 
 export
+    SphereGraph,
+    initial_spheregraph,
+
     # TerrainMap
     TerrainMap,
     x_min,
@@ -19,5 +22,6 @@ export
     point_to_index_coords
 
 include("terrain_map.jl")
+include("spheregraph.jl")
 
 end
