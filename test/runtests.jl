@@ -1,6 +1,6 @@
 using TerrainGraphs
 using Test
 
-@testset "TerrainGraphs.jl" begin
-    # Write your tests here.
+@testset verbose=true "TerrainGraphs.jl" begin
+    include("terrain_map.jl")
 end
