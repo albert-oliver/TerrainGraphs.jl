@@ -1,8 +1,16 @@
 module TerrainGraphs
 
+using MeshGraphs
+using LinearAlgebra
+using Statistics
+
 export
     SphereGraph,
+    radius,
     initial_spheregraph,
+
+    # Utils
+    refine_all!,
 
     # TerrainMap
     TerrainMap,
@@ -22,6 +30,10 @@ export
     point_to_index_coords
 
 include("terrain_map.jl")
-include("spheregraph.jl")
+include("spherical_graphs/spherical_graphs.jl")
+include("flat/flatgraph.jl")
+include("utils.jl")
+include("adapt_terrain.jl")
+include("io.jl")
 
 end
