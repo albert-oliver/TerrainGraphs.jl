@@ -1,12 +1,14 @@
 using Proj4
 
+# Type definition
+
 struct FlatSpec <: AbstractSpec
     trans
     terrain_map::TerrainMap
 end
 
 function FlatSpec(proj4_code::String, terrain_map::TerrainMap)
-    trans = Proj4.Transformation("EPSG:4326", "EPSG:32634")
+    trans = Proj4.Transformation("EPSG:4326", proj4_code)
     FlatSpec(trans, terrain_map)
 end
 
@@ -19,6 +21,8 @@ function FlatGraph(proj4_code::String, terrain_map::TerrainMap)
     trans = Proj4.Transformation("EPSG:4326", proj4_code)
     FlatGraph(trans, terrain_map)
 end
+
+# Type adjusting
 
 function new_coords_flat(g::FlatGraph, v1::Integer, v2::Integer)
     uv1, uv2 = uv(g, v1), uv(g, v2)
@@ -48,15 +52,17 @@ MeshGraphs.distance(g::FlatGraph, v1::Integer, v2::Integer) =
 MeshGraphs.new_vertex_coords(g::FlatGraph, v1::Integer, v2::Integer) =
     new_coords_flat(g, v1, v2)
 
-function initial_flat_graph(target_code::String, t::TerrainMap)
+# Initial graphs
+
+function FlatGraph(proj4_code::String, t::TerrainMap, n_elem_x, n_elem_y)
     g = rectangle_graph(
-        FlatSpec(target_code, t),
+        FlatSpec(proj4_code, t),
         x_min(t),
         x_max(t),
         y_min(t),
         y_max(t),
-        180,
-        180,
+        n_elem_x,
+        n_elem_y,
     )
 
     for i in normal_vertices(g)

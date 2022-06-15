@@ -1,3 +1,5 @@
+# Type definition
+
 struct TerrainSphereSpec <: AbstractSpec
     radius::Real
     terrain_map::TerrainMap
@@ -12,6 +14,8 @@ TerrainSphereGraph(terrain_map::TerrainMap) =
     TerrainSphereGraph(6371000, terrain_map)   # Earth's radius
 
 radius(g::TerrainSphereGraph) = spec(g).radius
+
+# Type adjusting
 
 function new_coords_on_terrain_sphere(g::TerrainSphereGraph, v1::Integer, v2::Integer)
     uv1, uv2 = get_adjusted_uve(g, v1, v2)
@@ -31,6 +35,7 @@ MeshGraphs.distance(g::TerrainSphereGraph, v1::Integer, v2::Integer) =
 MeshGraphs.new_vertex_coords(g::TerrainSphereGraph, v1::Integer, v2::Integer) =
     new_coords_on_terrain_sphere(g, v1, v2)
 
+# Initial graphs
 
 function TerrainSphereGraph(sphere_graph::SphereGraph, t::TerrainMap)
     r = radius(sphere_graph)

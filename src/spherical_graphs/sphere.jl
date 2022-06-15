@@ -1,3 +1,5 @@
+# Type definition
+
 struct SphereSpec <: AbstractSpec
     radius::Real
 end
@@ -7,6 +9,8 @@ const SphereGraph = MeshGraph{SphereSpec}
 SphereGraph(radius::Real) = MeshGraph(SphereSpec(radius))
 
 radius(g::SphereGraph) = spec(g).radius
+
+# Type adjusting
 
 function new_coords_on_sphere(g::SphereGraph, v1::Integer, v2::Integer)
     uv1, uv2 = get_adjusted_uve(g, v1, v2)
@@ -26,7 +30,17 @@ MeshGraphs.distance(g::SphereGraph, v1::Integer, v2::Integer) =
 MeshGraphs.new_vertex_coords(g::SphereGraph, v1::Integer, v2::Integer) =
     new_coords_on_sphere(g, v1, v2)
 
-function initial_spheregraph(radius, u_min, u_max, v_min, v_max, n_elem_x, n_elem_y)
+# Advanced constructors
+
+function SphereGraph(
+    radius::Real,
+    u_min::Real,
+    u_max::Real,
+    v_min::Real,
+    v_max::Real,
+    n_elem_x::Integer,
+    n_elem_y::Integer,
+)
     is_full_lon = u_min ≈ -180 && u_max ≈ 180
     has_north_pole = v_max ≈ 90
     has_south_pole = v_min ≈ -90
@@ -46,15 +60,7 @@ function initial_spheregraph(radius, u_min, u_max, v_min, v_max, n_elem_x, n_ele
         ny -= 1
     end
 
-    g = rectangle_graph(
-        SphereSpec(radius),
-        u_min,
-        u_max,
-        v_min,
-        v_max,
-        nx,
-        ny,
-    )
+    g = rectangle_graph(SphereSpec(radius), u_min, u_max, v_min, v_max, nx, ny)
 
     if is_full_lon
         for i = 0:(nx+1):(ny-1)*(nx+1)
@@ -82,48 +88,11 @@ function initial_spheregraph(radius, u_min, u_max, v_min, v_max, n_elem_x, n_ele
     end
 
     update_boundaries!(g)
-
     return g
 end
 
-function initial_spheregraph(radius, n_elem_x)
+function SphereGraph(radius::Real, n_elem_x::Integer)
     nx = n_elem_x
-    ny =  Int(ceil(nx / 2))
-    println("Element width = $(360/(nx))")
-    println("Element height = $(180/(ny))")
-    g = initial_spheregraph(radius, -180.0, 180.0, -90, 90, nx, ny)
-end
-
-function initial_spheregraph()
-    nx = 17
-    ny = Int(ceil((nx - 3) / 2))
-    println("$(360/(nx+1)) $(180/(ny+2))")
-    g = initial_spheregraph(
-        6000,
-        -180.0,
-        180 - 360 / (nx + 1),
-        -90 + (180 / (ny + 2)),
-        90 - (180 / (ny + 2)),
-        nx,
-        ny,
-    )
-
-    # 180 == -180
-    for i = 0:(nx+1):(ny-1)*(nx+1)
-        add_interior!(g, (nx + 1) + i, 1 + i, 2 * (nx + 1) + i)
-        add_interior!(g, 1 + i, (nx + 2) + i, 2 * (nx + 1) + i)
-    end
-
-    # Poles
-    v1 = add_vertex!(g, [0.0, -90.0, 0.0])
-    v2 = add_vertex!(g, [0.0, 90.0, 0.0])
-    for i = 0:(nx-1)
-        add_interior!(g, 1 + i, v1, 2 + i)
-        add_interior!(g, ny * (nx + 1) + 1 + i, ny * (nx + 1) + 2 + i, v2)
-    end
-    add_interior!(g, nx + 1, v1, 1)
-    add_interior!(g, (nx + 1) * (ny + 1), ny * (nx + 1) + 1, v2)
-
-    update_boundaries!(g)
-    return g
+    ny = Int(ceil(nx / 2))
+    g = SphereGraph(radius, -180, 180, -90, 90, nx, ny)
 end

@@ -122,72 +122,6 @@ function barycentric(g::MeshGraph, interior::Integer, p::Array{<:Real, 1})
 end
 
 """
-    approx_function(g, interior [, val_fun])
-
-Return approximated function over triangle.
-
-See also: [`barycentric_matrix`](@ref), [`barycentric`](@ref)
-"""
-function approx_function end
-
-function approx_function(g, interior, val_fun=(g, v)->get_value(g, v))
-    M = barycentric_matrix(g, interior)
-    v1, v2, v3 = interior_connectivity(g, interior)
-    val1, val2, val3 = map(v -> val_fun(g, v), [v1, v2, v3])
-    u(λ₁, λ₂) = val1 * λ₁ + val2 * λ₂ + val3 * (1 -  λ₁ - λ₂)
-    function f(p)
-        bp = barycentric(M, p)
-        u(bp[1], bp[2])
-    end
-    f
-end
-
-"""
-    pyramid_function(g, interior, summit)
-
-Return pyramid-like function that has value 1 in `summit` vertex and 0 in
-every other. It lineary decreases from 1 to 0 to neighbour vertices.
-
-`interior` is the only triangle where this function will return proper value
-"""
-function pyramid_function(g, interior, summit)
-    M = barycentric_matrix(g, interior)
-    v1, v2, v3 = interior_connectivity(g, interior)
-    val1, val2, val3 = map(v -> Int(summit == v), [v1, v2, v3])
-    u(λ₁, λ₂) = val1 * λ₁ + val2 * λ₂ + val3 * (1 -  λ₁ - λ₂)
-    function f(p)
-        bp = barycentric(M, p)
-        u(bp[1], bp[2])
-    end
-    f
-end
-
-"""
-    center_point(points)
-    center_point(g, vertices)
-    center_point(g, interior)
-
-Return center of mass of delivered points, or vertices in graph
-
-`points` is array of:
-- 3-element arrays [x, y, z]
-"""
-function center_point end
-
-center_point(points::Matrix) = mean(points, dims=1)
-
-center_point(points::Array{<:Array, 1}) = mean(points)
-
-function center_point(g, vertices::Array)
-    center_point(map(x -> xyz(g, x), vertices))
-end
-
-function center_point(g, interior::Integer)
-    center_point(g, interior_connectivity(g, interior))
-end
-
-
-"""
     projection_area(g, i)
     projection_area(triangle)
     projection_area(a, b, c)
@@ -211,6 +145,14 @@ function projection_area(g::MeshGraph, i::Integer)
     projection_area(xyz(g, a), xyz(g, b), xyz(g, c))
 end
 
+function triangle_area(a::Array{<:Real, 1}, b::Array{<:Real, 1}, c::Array{<:Real, 1})
+    return norm(cross(b - a, c - a)) / 2.0
+end
+
+function triangle_area(g::MeshGraph, i::Integer)
+    a, b, c = interior_connectivity(g, i)
+    traingle_area(xyz(g, a), xyz(g, b), xyz(g, c))
+end
 
 "Adjust shoreline triangles, so that there is no partially submerged ones"
 function adjust_shore(g)

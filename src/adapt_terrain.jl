@@ -63,7 +63,7 @@ end
 
 """
 Return iterator over pairs `(real, approx)` of all the points from `terrain`
-inside traingle represented by `interior`, where `real` is value from `terrain`
+inside triangle represented by `interior`, where `real` is value from `terrain`
 and `approx` is approximated value in graph `g`
 """
 function zipped_points_inside_triangle(g, interior, terrain)

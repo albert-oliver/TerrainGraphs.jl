@@ -5,7 +5,16 @@ using LinearAlgebra
 using Statistics
 
 export
+    # FlatGraph
+    FlatGraph,
+    FlatSpec,
+    initial_flat_graph,
+
+    # ShpereGraph
     SphereGraph,
+    SphereSpec,
+    TerrainSphere,
+    TerrainSphereSpec,
     radius,
     initial_spheregraph,
 
@@ -31,9 +40,10 @@ export
 
 include("terrain_map.jl")
 include("spherical_graphs/spherical_graphs.jl")
-include("flat/flatgraph.jl")
+include("flat_graphs/flat_graphs.jl")
 include("utils.jl")
 include("adapt_terrain.jl")
+include("error_calculation.jl")
 include("io.jl")
 
 end
