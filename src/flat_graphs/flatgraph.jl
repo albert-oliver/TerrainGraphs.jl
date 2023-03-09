@@ -22,6 +22,8 @@ function FlatGraph(proj4_code::String, terrain_map::TerrainMap)
     FlatGraph(trans, terrain_map)
 end
 
+terrain_map(g::FlatGraph) = spec(g).terrain_map
+
 # Type adjusting
 
 function new_coords_flat(g::FlatGraph, v1::Integer, v2::Integer)
@@ -33,7 +35,7 @@ end
 
 function convert_proj(g::FlatGraph, coords::AbstractVector{<:Real})
     u, v, e = coords
-    x, y = spec(g).trans([v, u])
+    x, y = spec(g).trans([u, v])
     return [x, y, e]
 end
 

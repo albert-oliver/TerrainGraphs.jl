@@ -15,6 +15,8 @@ TerrainSphereGraph(terrain_map::TerrainMap) =
 
 radius(g::TerrainSphereGraph) = spec(g).radius
 
+terrain_map(g::TerrainSphereGraph) = spec(g).terrain_map
+
 # Type adjusting
 
 function new_coords_on_terrain_sphere(g::TerrainSphereGraph, v1::Integer, v2::Integer)

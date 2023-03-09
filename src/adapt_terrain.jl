@@ -143,7 +143,7 @@ function mark_for_refinement(g::MeshGraph, terrain::TerrainMap, params)::Array{N
 end
 
 """
-    adapt_terrain!(g, terrain, ϵ, max_iters)
+    adapt_terrain!(g, params, max_iters)
 
 Adapt graph `g` to terrain map `terrain`. Stop when error is lesser than ϵ, or
 after `max_iters` iterations.
@@ -152,14 +152,14 @@ See also: [`generate_terrain_mesh`](@ref)
 """
 function adapt_terrain!(
     g::MeshGraph,
-    terrain::TerrainMap,
-    params,
-    max_iters::Integer,
+    params::RefinementParameters,
+    max_iters::Integer;
+    after_step::Function = (g, step) -> nothing
 )
     for i = 1:max_iters
         println("Iteration ", i)
         # export_obj(g, "baltyk_iter_$i.obj")
-        to_refine = mark_for_refinement(g, terrain, params)
+        to_refine = mark_for_refinement(g, terrain_map(g), params)
         if isempty(to_refine)
             break
         end
@@ -167,6 +167,7 @@ function adapt_terrain!(
             set_refine!(g, interior)
         end
         refine!(g)
+        after_step(g, i)
     end
     return g
 end
