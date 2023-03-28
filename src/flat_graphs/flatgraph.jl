@@ -35,7 +35,7 @@ end
 
 function convert_proj(g::FlatGraph, coords::AbstractVector{<:Real})
     u, v, e = coords
-    x, y = spec(g).trans([u, v])
+    x, y = spec(g).trans([v, u])        # This has to be reversed in Proj4
     return [x, y, e]
 end
 
