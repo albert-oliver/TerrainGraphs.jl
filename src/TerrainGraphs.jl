@@ -36,7 +36,10 @@ export
     real_elevation,
     index_to_point,
     point_to_index,
-    point_to_index_coords
+    point_to_index_coords,
+
+    # From MeshGraphs
+    export_inp
 
 include("terrain_map.jl")
 include("spherical_graphs/spherical_graphs.jl")
