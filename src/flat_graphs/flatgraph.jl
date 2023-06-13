@@ -1,4 +1,4 @@
-using Proj4
+using Proj
 
 # Type definition
 
@@ -7,20 +7,15 @@ struct FlatSpec <: AbstractSpec
     terrain_map::TerrainMap
 end
 
-function FlatSpec(proj4_code::String, terrain_map::TerrainMap)
-    trans = Proj4.Transformation("EPSG:4326", proj4_code)
+function FlatSpec(proj_code::String, terrain_map::TerrainMap)
+    trans = Proj.Transformation("EPSG:4326", proj_code, always_xy = true)
     FlatSpec(trans, terrain_map)
 end
 
 const FlatGraph = MeshGraph{FlatSpec}
 
-FlatGraph(proj, terrain_map::TerrainMap) =
-    MeshGraph(FlatSpec(proj, terrain_map))
-
-function FlatGraph(proj4_code::String, terrain_map::TerrainMap)
-    trans = Proj4.Transformation("EPSG:4326", proj4_code)
-    FlatGraph(trans, terrain_map)
-end
+FlatGraph(proj_code::String, terrain_map::TerrainMap) =
+    FlatGraph(FlatSpec(proj_code, terrain_map))
 
 terrain_map(g::FlatGraph) = spec(g).terrain_map
 
@@ -35,7 +30,7 @@ end
 
 function convert_proj(g::FlatGraph, coords::AbstractVector{<:Real})
     u, v, e = coords
-    x, y = spec(g).trans([v, u])        # This has to be reversed in Proj4
+    x, y = spec(g).trans([u, v])
     return [x, y, e]
 end
 

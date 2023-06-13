@@ -1,5 +1,4 @@
 using TerrainGraphs
-using MeshGraphs
 
 t = TerrainGraphs.load_tiff("resources/val.tif")
 tk = TerrainGraphs.kriging_nan(t)

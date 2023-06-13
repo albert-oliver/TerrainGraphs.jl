@@ -8,7 +8,7 @@ ArchGDAL = "c9ce4bd3-c3d5-55b8-8973-c0e20141b8c3"
 GeoStats = "dcc97b0b-8ce5-5539-9008-bb190f959ef6"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 MeshGraphs = "9c3b456d-075c-421b-b774-fb43dd44b54d"
-Proj4 = "9a7e659c-8ee8-5706-894e-f68f43bc57ea"
+Proj = "c94c279d-25a6-4763-9509-64d165bea63e"
 Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 
 [compat]
