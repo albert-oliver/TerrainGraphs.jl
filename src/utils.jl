@@ -1,40 +1,8 @@
-using GeoStats
-
 function refine_all!(g)
     for i in interiors(g)
         set_refine!(g, i)
     end
     refine!(g)
-end
-
-function kriging_nan(t::TerrainMap)
-    indices_filled = []
-    indices_nan = []
-    for i = 1:size(t.M, 1)
-        for j = 1:size(t.M, 2)
-            if isnan(t.M[i, j])
-                push!(indices_nan, [i, j])
-            else
-                push!(indices_filled, [i, j])
-            end
-        end
-    end
-    coords_filled = map(x -> index_to_point(t, x), indices_filled)
-    coords_nan = map(x -> index_to_point(t, x), indices_nan)
-    coords_nan_as_points = Point.(coords_nan)
-    values_filled = map(x -> t.M[x[1], x[2]], indices_filled)
-    props = (Z = values_filled,)
-    𝒟 = georef(props, coords_filled)
-    𝒢 = PointSet(coords_nan_as_points)
-    𝒫 = EstimationProblem(𝒟, 𝒢, :Z)
-    S = Kriging(:Z => (maxneighbors = 20,))
-    sol = solve(𝒫, S)
-    values_nan = map(x -> x[:Z], values(sol))
-    M = t.M
-    for ((i, j), val) in zip(indices_nan, values_nan)
-        M[i, j] = val
-    end
-    TerrainMap(M, t.x_min, t.y_min, t.Δx, t.Δy, t.nx, t.ny)
 end
 
 function simple_NaN_removal(t::TerrainMap)
