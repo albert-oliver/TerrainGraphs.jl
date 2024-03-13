@@ -1,7 +1,7 @@
 using TerrainGraphs
 
 t = TerrainGraphs.load_tiff("resources/extended_baltyk.tif")
-tk = TerrainGraphs.kriging_nan(t)
+tk = TerrainGraphs.simple_NaN_removal(t)
 t2 = TerrainMap(tk.M, tk.x_min, tk.y_min, tk.Δx, tk.Δy, tk.nx, tk.ny)
 p = TerrainGraphs.RefinementParameters(20, -100, 100, 100)
 g = TerrainGraphs.FlatUTMGraph(
