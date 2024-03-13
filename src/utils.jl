@@ -37,6 +37,33 @@ function kriging_nan(t::TerrainMap)
     TerrainMap(M, t.x_min, t.y_min, t.Δx, t.Δy, t.nx, t.ny)
 end
 
+function simple_NaN_removal(t::TerrainMap)
+
+    done = false
+
+    while !done
+        done = true
+
+        for c_idx in CartesianIndices(t.M)
+            if isnan(t.M[c_idx])
+                i = c_idx[1]
+                j = c_idx[2]
+                lower_i = i == 1 ? i : i - 1
+                upper_i = i == size(t.M, 1) ? i : i + 1
+                lower_j = j == 1 ? j : j - 1
+                upper_j = j == size(t.M, 2) ? j : j + 1
+                not_nan = filter(!isnan, t.M[lower_i:upper_i, lower_j:upper_j])
+                if isempty(not_nan)
+                    done = false
+                else
+                    t.M[i, j] = GeoStats.mean(not_nan)
+                end
+            end
+        end
+    end
+    return t
+end
+
 # ------------------------------------------------------------------------------
 
 
